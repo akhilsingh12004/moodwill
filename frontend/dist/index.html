@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moodwill — Mental Wellness OS</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◎</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        /* Dark Mode variables */
+        --bg: #0b0f12;
+        --s1: rgba(22, 31, 36, 0.65);
+        --s2: rgba(30, 43, 50, 0.8);
+        --s3: rgba(38, 54, 62, 0.45);
+        --s1-solid: #161f24;
+        --s2-solid: #1e2b32;
+        --text: #f8fafc;
+        --muted: #94a3b8;
+        --border: rgba(255, 255, 255, 0.08);
+        --teal: #2dd4bf;
+        --amber: #fbbf24;
+        --coral: #fb7185;
+        --purple: #a78bfa;
+        --blue: #38bdf8;
+        --glass-bg: rgba(18, 25, 29, 0.65);
+        
+        --gradient-teal: linear-gradient(135deg, #2dd4bf 0%, #0d9488 100%);
+        --gradient-amber: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+        --gradient-coral: linear-gradient(135deg, #fb7185 0%, #e11d48 100%);
+        --gradient-purple: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+        --gradient-blue: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+        --gradient-dark: linear-gradient(135deg, #162024 0%, #0b0f12 100%);
+        
+        --shadow-teal: 0 8px 32px rgba(45, 212, 191, 0.1);
+        --shadow-amber: 0 8px 32px rgba(251, 191, 36, 0.1);
+        --shadow-coral: 0 8px 32px rgba(251, 113, 133, 0.1);
+        --shadow-purple: 0 8px 32px rgba(167, 139, 250, 0.1);
+        --shadow-blue: 0 8px 32px rgba(56, 189, 248, 0.1);
+        --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
+      }
+
+      html[data-theme='light'] {
+        /* Light Mode variables */
+        --bg: #f8fafc;
+        --s1: rgba(255, 255, 255, 0.75);
+        --s2: rgba(241, 245, 249, 0.9);
+        --s3: rgba(226, 232, 240, 0.55);
+        --s1-solid: #ffffff;
+        --s2-solid: #f1f5f9;
+        --text: #0f172a;
+        --muted: #64748b;
+        --border: rgba(15, 23, 42, 0.08);
+        --teal: #0f766e;
+        --amber: #b45309;
+        --coral: #be123c;
+        --purple: #6d28d9;
+        --blue: #0369a1;
+        --glass-bg: rgba(255, 255, 255, 0.85);
+
+        --gradient-teal: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+        --gradient-amber: linear-gradient(135deg, #b45309 0%, #78350f 100%);
+        --gradient-coral: linear-gradient(135deg, #be123c 0%, #881337 100%);
+        --gradient-purple: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);
+        --gradient-blue: linear-gradient(135deg, #0369a1 0%, #0c4a6e 100%);
+        --gradient-dark: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+
+        --shadow-teal: 0 8px 32px rgba(15, 118, 110, 0.06);
+        --shadow-amber: 0 8px 32px rgba(180, 83, 9, 0.06);
+        --shadow-coral: 0 8px 32px rgba(190, 18, 60, 0.06);
+        --shadow-purple: 0 8px 32px rgba(109, 40, 217, 0.06);
+        --shadow-blue: 0 8px 32px rgba(3, 105, 161, 0.06);
+        --shadow-glass: 0 8px 32px 0 rgba(15, 23, 42, 0.04);
+      }
+
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; transition: background-color 0.25s ease, color 0.25s ease; }
+      #root { height: 100%; }
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: var(--bg); }
+      ::-webkit-scrollbar-thumb { background: var(--s3); border-radius: 3px; }
+      input[type=range] { accent-color: var(--teal); }
+      button, input, textarea, select { font-family: 'Inter', sans-serif; }
+      h1, h2, h3, h4, h5, h6 { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+      @media (max-width: 768px) {
+        body > div > div {
+          flex-direction: column !important;
+        }
+        .saas-sidebar {
+          width: 100% !important;
+          height: auto !important;
+          position: relative !important;
+          border-right: none !important;
+          border-bottom: 1px solid var(--border) !important;
+          padding: 1.5rem 1.25rem !important;
+        }
+        .saas-sidebar > div:nth-child(2) {
+          flex-direction: row !important;
+          flex-wrap: wrap !important;
+          gap: 8px !important;
+          margin-bottom: 1rem !important;
+        }
+        .saas-nav-link {
+          padding: 8px 12px !important;
+          font-size: 11.5px !important;
+        }
+        .saas-main-content {
+          padding: 2rem 1.5rem !important;
+        }
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/index-DPXqnu3V.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      window.addEventListener('error', function(e) {
+        var div = document.createElement('div');
+        div.style.position = 'fixed';
+        div.style.top = '0';
+        div.style.left = '0';
+        div.style.width = '100%';
+        div.style.background = '#e11d48';
+        div.style.color = 'white';
+        div.style.padding = '20px';
+        div.style.zIndex = '99999';
+        div.style.fontFamily = 'monospace';
+        div.style.whiteSpace = 'pre-wrap';
+        div.innerHTML = '<h1>Client Error: ' + e.message + '</h1><p>' + (e.error ? e.error.stack : '') + '</p>';
+        document.body.appendChild(div);
+      });
+      window.addEventListener('unhandledrejection', function(e) {
+        var div = document.createElement('div');
+        div.style.position = 'fixed';
+        div.style.top = '0';
+        div.style.left = '0';
+        div.style.width = '100%';
+        div.style.background = '#fb923c';
+        div.style.color = 'black';
+        div.style.padding = '20px';
+        div.style.zIndex = '99999';
+        div.style.fontFamily = 'monospace';
+        div.style.whiteSpace = 'pre-wrap';
+        div.innerHTML = '<h1>Unhandled Promise Rejection: ' + e.reason + '</h1><p>' + (e.reason && e.reason.stack ? e.reason.stack : '') + '</p>';
+        document.body.appendChild(div);
+      });
+    </script>
+  </body>
+</html>

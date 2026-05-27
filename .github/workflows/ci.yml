@@ -1,0 +1,89 @@
+name: ZenStack CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ── Lint & syntax check backend ─────────────────────────────────────────────
+  backend-check:
+    name: Backend Syntax Check & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Syntax check all files
+        run: |
+          node -e "
+            const fs=require('fs');
+            const vm=require('vm');
+            const walk=(d)=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(d+'/'+e.name):d+'/'+e.name);
+            const files=walk('backend/src').filter(f=>f.endsWith('.js'));
+            let errs=0;
+            files.forEach(f=>{try{new vm.Script(fs.readFileSync(f,'utf8'),{filename:f});}catch(e){console.error('FAIL',f,e.message);errs++;}});
+            if(errs>0)process.exit(1);
+            console.log('All',files.length,'files OK');
+          "
+
+      - name: Run backend tests
+        run: npm test --workspace=backend
+
+  # ── Build frontend ────────────────────────────────────────────────────────────
+  frontend-build:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_URL:    ${{ secrets.VITE_API_URL }}
+          VITE_SOCKET_URL: ${{ secrets.VITE_SOCKET_URL }}
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist/
+
+  # ── Deploy frontend to Vercel (main branch only) ─────────────────────────────
+  deploy-frontend:
+    name: Deploy to Vercel
+    needs: [backend-check, frontend-build]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token:   ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id:  ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: frontend
+          vercel-args: "--prod"
